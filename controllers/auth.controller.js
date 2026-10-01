@@ -36,8 +36,8 @@ exports.login = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const existeUser = await User.findOne({ email });
-    if (existeUser) {
+    const existUser = await User.findOne({ email });
+    if (existUser) {
       return res.status(400).json({ Error: 'Not valid email' });
     }
     const salt = await bcrypt.genSalt(10);
