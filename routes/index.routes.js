@@ -9,5 +9,6 @@ router.post("/test-login", (req, res) => {
 
 router.use('/api/auth', require('./auth.routes'));
 router.use('/api/user', require('./users.routes'));
+router.use("/api/characters", require('./character.routes'));
 
 module.exports = router;
