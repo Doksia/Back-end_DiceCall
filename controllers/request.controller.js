@@ -76,7 +76,7 @@ const handleRequestStatus = async (req, res, next) => {
             }
         } campaignToUpdate.currentPlayers += 1;
         requestToHandle.status = status;
-        const updateRequest = await requestToHandle.save();
+        const updatedRequest = await requestToHandle.save();
         res.json({message: `Request ${status === "accepted" ? "accepted" : "rejected"} successfully`, updatedRequest});
     } catch (error) {
         res.status(400).json({Error: "Error accepting/rejecting the requests"});
