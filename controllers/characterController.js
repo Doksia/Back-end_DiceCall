@@ -27,7 +27,7 @@ const getMyCharacters = async (req, res, next) => {
         const characters = await Character.find({user: req.payload._id});
         res.json(characters);
     } catch (error) {
-        res.status(400).json({Error: "Error creating new character"});
+        res.status(400).json({Error: "Error finding your characters"});
     }
 };
 
