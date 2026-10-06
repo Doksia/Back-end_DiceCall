@@ -35,7 +35,7 @@ const getAllCampaigns = async (req, res, next) => {
 const updateCampaign = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const campaign = await Campaign.findBy(id);
+        const campaign = await Campaign.findById(id);
         if (!campaign) {
             return res.status(404).json({Error: "Campaign not found"});
         }
@@ -57,4 +57,25 @@ const updateCampaign = async (req, res, next) => {
     } catch (error) {
         res.status(400).json({Error: "Error updating the campaign"});
     }
+};
+
+const deleteCampaign = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const campaign = await Campaign.findById(id);
+        if (campaign.dm.toString() !== req.payload._id) {
+            return res.status(403).json({Error: "You are not allow to delete this campaign"});
+        }
+        await Campaign.findByIdAndDelete(id);
+        res.json({Success: "Campaign successfully deleted"});
+    } catch (error) {
+        res.status(400).json({Error: "Error deleting the campaign"});
+    }
+};
+
+module.exports = {
+    createCampaign,
+    getAllCampaigns,
+    updateCampaign,
+    deleteCampaign,
 };
