@@ -85,6 +85,6 @@ const handleRequestStatus = async (req, res, next) => {
 
 module.exports = {
     sendRequest,
-    geCampaignRequest,
+    getCampaignRequest,
     handleRequestStatus
 };
