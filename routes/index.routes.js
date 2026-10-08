@@ -11,5 +11,6 @@ router.use('/api/auth', require('./auth.routes'));
 router.use('/api/user', require('./users.routes'));
 router.use("/api/characters", require('./character.routes'));
 router.use("/api/campaigns", require('./campaign.routes'));
+router.use("/requests", require("./request.routes"));
 
 module.exports = router;

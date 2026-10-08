@@ -6,7 +6,7 @@ const {
     getMyCharacters,
     updateCharacter,
     deleteCharacter
-} = require("../controllers/characterController");
+} = require("../controllers/character.Controller");
 
 router.post("/", protect, createCharacter);
 router.post("/myCharacters", protect, getMyCharacters);

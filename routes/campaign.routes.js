@@ -6,7 +6,7 @@ const {
     getAllCampaigns,
     updateCampaign,
     deleteCampaign,
-} = require("../controllers/campaignController");
+} = require("../controllers/campaign.Controller");
 
 router.get("/", getAllCampaigns);
 router.post("/", protect, createCampaign);

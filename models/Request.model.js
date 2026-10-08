@@ -15,11 +15,11 @@ const requestSchema = new mongoose.Schema({
         ref: "Character",
         required: true,
     },
-    status: {
+    request_status: {
         type: string,
         required: true,
-        enum: ["Pending", "Accepted", "Rejected"],
-        default: "Pending"
+        enum: ["Pending", "Accepted", "Rejected", "Not requested"],
+        default: "Not requested"
     },
 },
 {
