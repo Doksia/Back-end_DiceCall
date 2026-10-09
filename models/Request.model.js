@@ -16,7 +16,7 @@ const requestSchema = new mongoose.Schema({
         required: true,
     },
     request_status: {
-        type: string,
+        type: String,
         required: true,
         enum: ["Pending", "Accepted", "Rejected", "Not requested"],
         default: "Not requested"

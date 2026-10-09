@@ -34,7 +34,9 @@ const getMyCharacters = async (req, res, next) => {
 const updateCharacter = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const {name, game_system, race, class: characterClass, level, alignment} = req.body;
+        
+        const { name, game_system, race, class: characterClass, level, alignment } = req.body;
+        
         const character = await Character.findById(id);
         if (!character) {
             return res.status(404).json({Error: "Character not found"});
@@ -44,8 +46,8 @@ const updateCharacter = async (req, res, next) => {
         }
         const updatedCharacter = await Character.findByIdAndUpdate(
             id,
-            {name, game_system, race, class: characterClass, level, alignment},
-            {new: true, runValidators: true}
+            { name, game_system, race, class: characterClass, level: Number(level), alignment },
+            { new: true, runValidators: true }
         );
         res.json(updatedCharacter);
     } catch (error) {

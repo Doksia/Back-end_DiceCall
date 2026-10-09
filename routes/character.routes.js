@@ -9,8 +9,8 @@ const {
 } = require("../controllers/character.Controller");
 
 router.post("/", protect, createCharacter);
-router.post("/myCharacters", protect, getMyCharacters);
-router.post("/:id", protect, updateCharacter);
-router.post("/:id", protect, deleteCharacter);
+router.get("/myCharacters", protect, getMyCharacters);
+router.put("/:id", protect, updateCharacter);
+router.delete("/:id", protect, deleteCharacter);
 
 module.exports = router;

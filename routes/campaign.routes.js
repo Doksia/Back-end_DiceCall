@@ -10,7 +10,7 @@ const {
 
 router.get("/", getAllCampaigns);
 router.post("/", protect, createCampaign);
-router.post("/:id", protect, updateCampaign);
-router.post("/:id", protect, deleteCampaign);
+router.put("/:id", protect, updateCampaign);
+router.delete("/:id", protect, deleteCampaign);
 
 module.exports = router;

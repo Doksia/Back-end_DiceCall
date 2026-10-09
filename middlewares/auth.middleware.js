@@ -6,12 +6,17 @@ module.exports = function (req, res, next) {
     return res.status(401).json({ Error: 'Denied access' });
   }
 
-  try {
-    const token = authHeader.split(' ')[1];
-    const encript = jwt.verify(token, process.env.JWT_SECRET);
-    req.user._id = encript; 
-    next(); 
-  } catch (error) {
-    res.status(401).json({ Error: 'Token no valid' });
-  }
-};
+try {
+  const token = authHeader.split(' ')[1];
+  const encript = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = {
+    _id: encript.id
+  }; 
+  req.payload = {
+    _id: encript.id
+  }; 
+  
+  next(); 
+} catch (error) {
+  res.status(401).json({ Error: 'Token no valid' });
+}}

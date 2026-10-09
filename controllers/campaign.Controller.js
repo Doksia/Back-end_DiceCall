@@ -25,7 +25,7 @@ const createCampaign = async (req, res, next) => {
 
 const getAllCampaigns = async (req, res, next) => {
     try {
-        const campaigns = await Campaign.find({ status: "open" }).populate("dm", "username");
+        const campaigns = await Campaign.find({ status: "Open" }).populate("dm", "username");
         res.json(campaigns);
     } catch (error) {
         res.status(400).json({Error: "Error finding your campaigns"});
@@ -42,14 +42,29 @@ const updateCampaign = async (req, res, next) => {
         if (campaign.dm.toString() !== req.payload._id) {
             return res.status(403).json({Error: "You dont have the permission to edit this campaign"});
         }
-        if (req.body.currentPlayers && req.body.maxPlayers) {
-            if (Number(req.body.currentPlayers) >= Number(req.body.maxPlayers)) {
-                req.body.status = "full";
-            } else {
-                req.body.status = "open";
-            }
+        const { game_system, format, short_description, status, looking_for, current_players, max_players, campaign_level } = req.body;
+        let finalStatus = status || campaign.status;
+        const current = req.body.current_players !== undefined ? Number(req.body.current_players) : campaign.current_players;
+        const max = req.body.max_players !== undefined ? Number(req.body.max_players) : campaign.max_players;
+        
+        if (current >= max) {
+            finalStatus = "Full";
+        } else {
+            finalStatus = "Open";
         }
-        const updatedCampaign = await Campaign.findByIdAndUpdate(id, req.body, {
+
+        const updatedData = {
+            game_system,
+            format,
+            short_description,
+            status: finalStatus,
+            looking_for,
+            current_players: Number(current),
+            max_players: Number(max),
+            campaign_level: Number(campaign_level)
+        };
+
+        const updatedCampaign = await Campaign.findByIdAndUpdate(id, updatedData, {
             new: true,
             runValidators: true,
         });
