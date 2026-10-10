@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+
 const campaignSchema = new mongoose.Schema({
     dm: {
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
@@ -24,7 +25,7 @@ const campaignSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ["Open","Full"]
+        enum: ["Open", "Full"]
     },
     looking_for: {
         type: String,
@@ -49,20 +50,25 @@ const campaignSchema = new mongoose.Schema({
         min: [1, "The minimum level is 1"],
         default: 1,
     },
+    communication_link: {
+        type: String,
+        default: "",
+    }
 }, 
 {
     timestamps: true,
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true}
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+campaignSchema.virtual("slotsDisplay").get(function () {
+    return `${this.current_players} / ${this.max_players}`;
 });
 
-campaignSchema.virtual("slotsDisplay").get(function () {
-    return '${this.current_players} / ${this.max_players}';
-});
 campaignSchema.virtual("availableSlots").get(function () {
     const slots = this.max_players - this.current_players;
-    return slots > 0 ? slots: 0;
+    return slots > 0 ? slots : 0;
 });
+
 const Campaign = mongoose.model("Campaign", campaignSchema);
 
 module.exports = Campaign;

@@ -41,7 +41,7 @@ const getCampaignRequest = async (req, res, next) => {
         if (campaign.dm.toString() !== req.payload?._id) {
             return res.status(403).json({Error: "You dont have permission to see the pending requests of this campaign"});
         }
-        const request = await Request.find({campaign: campaignId})
+        const request = await Request.find({ campaign: campaignId, request_status: "Pending" })
         .populate("applicant", "username")
         .populate("character");
 
@@ -86,13 +86,13 @@ const handleRequestStatus = async (req, res, next) => {
             const updatedRequest = await requestToHandle.save();
             return res.json({message: `Request processed successfully`, updatedRequest});
         } 
-       
         if (currentStatus.toLowerCase() === "rejected") {
-            await Request.findByIdAndDelete(id);
+            requestToHandle.request_status = "Rejected";
+            const updatedRequest = await requestToHandle.save();
             return res.json({
-                message: `Request rejected and cleared successfully`, 
-                updatedRequest: { _id: id, request_status: "Rejected", status: "Rejected" }
-              });
+                message: `Request rejected successfully`, 
+                updatedRequest
+            });
         }
         
     } catch (error) {
@@ -107,10 +107,41 @@ const getPlayerRequests = async (req, res, next) => {
         const requests = await Request.find({ applicant: userId })
             .populate("campaign")
             .populate("character");
+        const secureRequests = requests.map(reqDoc => {
+            const requestObj = reqDoc.toObject();
             
-        res.json(requests);
+            if (requestObj.campaign && requestObj.request_status !== "Accepted") {
+                requestObj.campaign.communication_link = undefined; 
+            }
+            return requestObj;
+        });
+            
+        res.json(secureRequests);
     } catch (error) {
         res.status(400).json({ Error: "Error finding your requests" });
+    }
+};
+
+const deletePlayerRequest = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const currentUserId = req.payload?._id || req.user?._id;
+
+        const requestToDelete = await Request.findById(id);
+        if (!requestToDelete) {
+            return res.status(404).json({ Error: "Request not found" });
+        }
+        if (requestToDelete.applicant.toString() !== currentUserId) {
+            return res.status(403).json({ Error: "You don't have permission to delete this request" });
+        }
+
+        if (requestToDelete.request_status === "Pending") {
+            return res.status(400).json({ Error: "You cannot delete a request that is still pending" });
+        }
+        await Request.findByIdAndDelete(id);
+        return res.json({ Success: "Request permanently deleted from database" });
+    } catch (error) {
+        return res.status(400).json({ Error: "Error clearing the request" });
     }
 };
 
@@ -118,5 +149,6 @@ module.exports = {
     sendRequest,
     getCampaignRequest,
     handleRequestStatus,
-    getPlayerRequests
+    getPlayerRequests,
+    deletePlayerRequest
 };

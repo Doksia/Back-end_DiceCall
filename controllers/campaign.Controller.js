@@ -1,7 +1,7 @@
 const Campaign = require("../models/Campaign.model");
 const createCampaign = async (req, res, next) => {
     try {
-        const {game_system, format,  short_description, status, looking_for, current_players, max_players, campaign_level} = req.body;
+        const {game_system, format,  short_description, status, looking_for, current_players, max_players, campaign_level, communication_link} = req.body;
         const newCampaign = new Campaign({
             dm: req.payload._id,
             game_system,
@@ -11,7 +11,8 @@ const createCampaign = async (req, res, next) => {
             looking_for,
             current_players,
             max_players,
-            campaign_level
+            campaign_level,
+            communication_link
         });
         const savedCampaign = await newCampaign.save();
         res.status(201).json({
@@ -42,7 +43,7 @@ const updateCampaign = async (req, res, next) => {
         if (campaign.dm.toString() !== req.payload._id) {
             return res.status(403).json({Error: "You dont have the permission to edit this campaign"});
         }
-        const { game_system, format, short_description, status, looking_for, current_players, max_players, campaign_level } = req.body;
+        const { game_system, format, short_description, status, looking_for, current_players, max_players, campaign_level, communication_link } = req.body;
         let finalStatus = status || campaign.status;
         const current = req.body.current_players !== undefined ? Number(req.body.current_players) : campaign.current_players;
         const max = req.body.max_players !== undefined ? Number(req.body.max_players) : campaign.max_players;
@@ -61,7 +62,8 @@ const updateCampaign = async (req, res, next) => {
             looking_for,
             current_players: Number(current),
             max_players: Number(max),
-            campaign_level: Number(campaign_level)
+            campaign_level: Number(campaign_level),
+            communication_link
         };
 
         const updatedCampaign = await Campaign.findByIdAndUpdate(id, updatedData, {
